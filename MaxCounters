@@ -1,0 +1,30 @@
+function solution(N, A) {
+    var B = [];
+    var max = 0, max_at_apocalypsis = 0;
+
+//Runs in O(M)    
+    for( var i=0; i<A.length; i++  ) {
+        if( A[i] <= N ) {
+            var k = A[i]-1;             //Just for clarity
+            if( B[k] === undefined ) {
+                B[k] = max_at_apocalypsis+1;
+            }
+            else {
+                B[k]++;
+            }
+            max = Math.max(max, B[k]);            
+        }
+        else {
+            B = [];
+            max_at_apocalypsis = max;   
+        }
+    }
+
+//Runs in O(N)
+    for( var j=0; j<N; j++ ) {
+        B[j] = (B[j] === undefined) ? max_at_apocalypsis : B[j];
+    }
+    return B;
+    
+//Thus the whole thing runs in O(N+M), as required.
+}
