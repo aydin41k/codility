@@ -1,0 +1,71 @@
+function solution(S, P, Q) {
+    var A_array = [0];
+    var C_array = [0];
+    var G_array = [0];
+    
+    var result_array = [0];
+  
+  //Build the above 3 arrays with prefix sums
+    for( var i=0; i<S.length; i++ ) {
+        if( i>0 ) {
+            A_array[i] = A_array[i-1];
+            C_array[i] = C_array[i-1];
+            G_array[i] = G_array[i-1];
+        }
+        
+        switch( S.charAt(i)) {
+            case "A":
+                A_array[i]++;
+                break;
+            case "C":
+                C_array[i]++;
+                break;
+            case "G":
+                G_array[i]++;
+        }        
+    }
+
+//Check the genom array, to see if a given genom (located at char_index) occured in the (P,Q) range
+//If yes, push the corresponding value (push_value) into the result array and return true
+//Returning true/false is useful to break the for loop below as soon as a result is returned
+  var check_push = function(Array,check_index,push_value) {
+        var start = (P[check_index] == 0) ? 0 : Array[P[check_index]-1];
+        var end = Array[Q[check_index]];
+            
+        if( end > start ) {
+            result_array[check_index] = push_value;
+            return true;
+        }
+        
+        else { return false; }
+    }
+    
+    for( j=0; j<P.length; j++ ) {
+    
+//If there is a single genom to be checked, then it is the minimum itself    
+        if( P[j] === Q[j] ) {
+            switch( S.charAt(P[j]) ) {
+                case "A":
+                    result_array[j] = 1;
+                    break;
+                case "C":
+                    result_array[j] = 2;
+                    break;
+                case "G":
+                    result_array[j] = 3;
+                    break;
+                default:
+                    result_array[j] = 4;
+            }
+            continue;    
+        }
+//If more than 1 genom are compared, use the above fxn to populate result_array    
+        if( check_push(A_array,j,1) ) { continue; }
+        else if( check_push(C_array,j,2) ){ continue; }
+        else if( check_push(G_array,j,3) ) { continue; }   
+        else { 
+         result_array[j] = 4;   
+        }
+    }
+ return result_array;
+}
